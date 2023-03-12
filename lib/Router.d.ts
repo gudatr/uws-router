@@ -1,12 +1,12 @@
-import { TemplatedApp } from "uWebSockets.js";
+import { AppOptions } from "uWebSockets.js";
 import { NextFunction } from "./NextFunction";
 import RequestData from "./RequestData";
 export declare class Router {
-    private app;
     private middlewareStack;
     private groupStack;
     private routes;
-    constructor(app: TemplatedApp);
+    private app;
+    constructor(ssl: boolean, options?: AppOptions);
     private getHttpMethod;
     middleware(middleware: (request: RequestData, next: NextFunction) => void, sub: () => void): void;
     group(groupName: string, sub: () => void): void;
