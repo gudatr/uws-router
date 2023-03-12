@@ -1,14 +1,13 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "module": "amd",
+    "module": "CommonJS",
     "lib": [
       "es6"
     ],
     "moduleResolution": "node",
     "allowJs": true,
     "outDir": "lib",
-    "outFile": "./lib/index.js",
     "removeComments": false,
     "rootDir": "src",
     "strict": true,
