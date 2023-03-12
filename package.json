@@ -2,8 +2,8 @@
   "name": "uws-router",
   "version": "1.0.0",
   "description": "A different approach to routing with uWebSockets.js",
-  "main": "lib/Router.js",
-  "types": "lib/Router.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
