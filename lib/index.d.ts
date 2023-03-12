@@ -1,4 +1,4 @@
-import { HttpResponse, AppOptions, RecognizedString } from "uWebSockets.js";
+import { HttpResponse, AppOptions, RecognizedString, us_listen_socket } from "uWebSockets.js";
 /**
  * A simple router that keeps your app file structured by using a
  * function stack approach for middleware. It's currently pretty
@@ -40,7 +40,17 @@ export declare class Router {
      * @param alias optional, will override the handlers name for the route
      */
     endpoint(method: 'del' | 'patch' | 'post' | 'get' | 'put' | 'head' | 'options', handler: (request: RequestData) => void, alias?: string | undefined): void;
+    /**
+     * @returns all defined routes and their methods
+     */
     getRoutes(): string[];
+    /**
+     * Start listening for incoming requests on the defined routes
+     * @param host hostname
+     * @param port
+     * @param callback us_listen_socket will contain the socket the server is listening on if successful, otherwise undefined
+     */
+    listen(host: RecognizedString, port: number, callback: (listen: us_listen_socket) => void): void;
 }
 export declare type NextFunction = (request: RequestData) => any;
 /**

@@ -1,4 +1,4 @@
-import { HttpRequest, HttpResponse, SSLApp, TemplatedApp, AppOptions, App, RecognizedString } from "uWebSockets.js";
+import { HttpRequest, HttpResponse, SSLApp, TemplatedApp, AppOptions, App, RecognizedString, us_listen_socket } from "uWebSockets.js";
 import * as fs from 'fs';
 
 /**
@@ -132,9 +132,22 @@ export class Router {
         })
     }
 
+    /**
+     * @returns all defined routes and their methods
+     */
     getRoutes() {
         return this.routes;
     }
+
+    /**
+     * Start listening for incoming requests on the defined routes
+     * @param host hostname
+     * @param port 
+     * @param callback us_listen_socket will contain the socket the server is listening on if successful, otherwise undefined
+     */
+    listen(host: RecognizedString, port: number, callback: (listen: us_listen_socket) => void) {
+        this.app.listen(host, port, callback);
+    };
 }
 
 export type NextFunction = (request: RequestData) => any;
