@@ -1,5 +1,6 @@
 import { HttpRequest, HttpResponse, SSLApp, TemplatedApp, AppOptions, App, RecognizedString, us_listen_socket } from "uWebSockets.js";
 import * as fs from 'fs';
+import { gzip } from "zlib";
 
 /**
  * A simple router that keeps your app file structured by using a
@@ -216,10 +217,28 @@ export class RequestData {
      * The response cannot be written to after this.
      * @param body
      * @param closeConnection
+     * @param compression - compression level 0 - 9, adds gzip header  if used (>0)
      * @returns If write was successful
      */
-    public end(body: RecognizedString, closeConnection = false): boolean {
+    public async end(body: RecognizedString, closeConnection = false, compression = 0): Promise<boolean> {
+        if (compression > 0) {
+            body = await new Promise((resolve, reject) => {
+                gzip(body, { level: compression }, (error, result) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
+
+            if (this._hasEnded) return false;
+
+            this.internalResponse.writeHeader('Content-Encoding', 'gzip')
+        }
+
         if (this._hasEnded) return false;
+
         this.internalResponse.end(body, closeConnection);
         return true;
     }

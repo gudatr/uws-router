@@ -96,8 +96,9 @@ export declare class RequestData {
      * The response cannot be written to after this.
      * @param body
      * @param closeConnection
+     * @param compression - compression level 0 - 9, adds gzip header  if used (>0)
      * @returns If write was successful
      */
-    end(body: RecognizedString, closeConnection?: boolean): boolean;
+    end(body: RecognizedString, closeConnection?: boolean, compression?: number): Promise<boolean>;
     hasEnded(): boolean;
 }
