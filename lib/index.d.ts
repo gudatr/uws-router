@@ -24,6 +24,7 @@ export declare class Router {
      * @param sub the stack called on this route
      */
     group(groupName: string, sub: () => void): void;
+    private cachedFiles;
     /**
      * Adds a get endpoint that serves a file.
      * Reloads the file from disc when cacheDuration is reached
@@ -31,8 +32,16 @@ export declare class Router {
      * @param alias the route's name
      * @param cacheDuration the time to wait before refreshing from storage in ms
      */
-    private cached;
     serveFile(file: string, alias: string, cacheDuration?: number): void;
+    /**
+     * The same as serveFile with the addition that the path
+     * in the file parameter is resolved with path.resolve(__dirname, file).
+     * This lets you e.g. easily use paths relative to your router file.
+     * @param file the absolute file path
+     * @param alias the route's name
+     * @param cacheDuration the time to wait before refreshing from storage in ms
+     */
+    serveFileRelative(file: string, alias: string, cacheDuration?: number): void;
     /**
      * Adds an endpoint with a handler to be executed
      * @param groupName the name of the group, e.g. "user" becomes "/user/"

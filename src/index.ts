@@ -1,6 +1,7 @@
 import { HttpRequest, HttpResponse, SSLApp, TemplatedApp, AppOptions, App, RecognizedString, us_listen_socket } from "uWebSockets.js";
 import * as fs from 'fs';
 import { gzip } from "zlib";
+import path, { dirname } from "path";
 
 /**
  * A simple router that keeps your app file structured by using a
@@ -53,6 +54,7 @@ export class Router {
         this.groupStack.pop();
     }
 
+    private cachedFiles: Dictionary<{ time: number, data: Buffer }> = {};
     /**
      * Adds a get endpoint that serves a file.
      * Reloads the file from disc when cacheDuration is reached
@@ -60,17 +62,16 @@ export class Router {
      * @param alias the route's name
      * @param cacheDuration the time to wait before refreshing from storage in ms
      */
-    private cached: Dictionary<{ time: number, data: Buffer }> = {};
     serveFile(file: string, alias: string, cacheDuration: number = 10000) {
         this.endpoint('get', (request: RequestData) => {
-            let cached = this.cached[file];
+            let cached = this.cachedFiles[file];
 
             if (cached && cached.time > Date.now() - cacheDuration) {
                 request.end(cached.data);
             } else {
                 fs.readFile(file, (err, data) => {
                     if (err) throw err;
-                    this.cached[file] = {
+                    this.cachedFiles[file] = {
                         time: Date.now(),
                         data
                     }
@@ -78,6 +79,18 @@ export class Router {
                 });
             }
         }, alias);
+    }
+
+    /**
+     * The same as serveFile with the addition that the path
+     * in the file parameter is resolved with path.resolve(__dirname, file).
+     * This lets you e.g. easily use paths relative to your router file.
+     * @param file the absolute file path 
+     * @param alias the route's name
+     * @param cacheDuration the time to wait before refreshing from storage in ms
+     */
+    serveFileRelative(file: string, alias: string, cacheDuration: number = 10000) {
+        this.serveFile(path.resolve(__dirname, file), alias, cacheDuration);
     }
 
     /**
