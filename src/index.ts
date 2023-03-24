@@ -108,12 +108,14 @@ export class Router {
 
         //Middlewares currently on the stack are wrapped around the handler
         let currentHandler = handler;
-        this.middlewareStack.forEach(middlewareUsed => {
+        this.middlewareStack.reverse().forEach(middlewareUsed => {
             let referencedHandler = currentHandler;
             currentHandler = (request: RequestData) => {
                 middlewareUsed(request, referencedHandler);
             }
         });
+
+        this.middlewareStack.reverse();
 
         this.routes.push(`${method}: ${path}`);
 
