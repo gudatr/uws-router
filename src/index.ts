@@ -15,6 +15,8 @@ export class Router {
     private routes: Array<string> = [];
     private app: TemplatedApp;
 
+    private thisOverride: object | undefined;
+
     constructor(ssl: boolean, options: AppOptions = {}) {
         if (ssl && options) {
             this.app = SSLApp(options);
@@ -47,10 +49,13 @@ export class Router {
      * Adds a new group to the routes in sub
      * @param groupName the name of the group, e.g. "user" becomes "/user/" 
      * @param sub the stack called on this route
+     * @param _this If you are using a method from an object and not a static class as handler in your endpoints, you can supply the object for the whole group here instead of separately for each endpoint
      */
-    group(groupName: string, sub: () => void): void {
+    group(groupName: string, sub: () => void, _this: object | undefined = undefined): void {
         this.groupStack.push(groupName.toLowerCase());
+        this.thisOverride = _this;
         sub();
+        this.thisOverride = undefined;
         this.groupStack.pop();
     }
 
@@ -100,7 +105,7 @@ export class Router {
      * @param alias optional, if not specified the handlers name will be used for the endpoint
      * @param _this If you are using a method from an object and not a static class as handler, add your object here so the this keyword is bound correctly
      */
-    endpoint(method: 'del' | 'patch' | 'post' | 'get' | 'put' | 'head' | 'options', handler: (request: RequestData) => void, alias: string | undefined = undefined, _this: any | undefined = undefined): void {
+    endpoint(method: 'del' | 'patch' | 'post' | 'get' | 'put' | 'head' | 'options', handler: (request: RequestData) => void, alias: string | undefined = undefined, _this: object | undefined = undefined): void {
 
         //Route is created from the groups currently on the stack plus the handlers name
         this.groupStack.push(alias ? alias : handler.name.toLowerCase());
@@ -111,7 +116,11 @@ export class Router {
         let currentHandler = handler;
 
         //Bind the _this parameter to the handler if specified
-        if (_this) currentHandler = currentHandler.bind(_this);
+        if (_this) {
+            currentHandler = currentHandler.bind(_this);
+        } else if (this.thisOverride) {
+            currentHandler = currentHandler.bind(this.thisOverride);
+        }
 
         this.middlewareStack.reverse().forEach(middlewareUsed => {
             let referencedHandler = currentHandler;
