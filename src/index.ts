@@ -95,11 +95,12 @@ export class Router {
 
     /**
      * Adds an endpoint with a handler to be executed
-     * @param groupName the name of the group, e.g. "user" becomes "/user/" 
-     * @param sub the stack called on this route
-     * @param alias optional, will override the handlers name for the route
+     * @param method the http method used, the method will be 
+     * @param handle the method used to handle the incoming request for this route
+     * @param alias optional, if not specified the handlers name will be used for the endpoint
+     * @param _this If you are using a method from an object and not a static class as handler, add your object here so the this keyword is bound correctly
      */
-    endpoint(method: 'del' | 'patch' | 'post' | 'get' | 'put' | 'head' | 'options', handler: (request: RequestData) => void, alias: string | undefined = undefined): void {
+    endpoint(method: 'del' | 'patch' | 'post' | 'get' | 'put' | 'head' | 'options', handler: (request: RequestData) => void, alias: string | undefined = undefined, _this: any | undefined = undefined): void {
 
         //Route is created from the groups currently on the stack plus the handlers name
         this.groupStack.push(alias ? alias : handler.name.toLowerCase());
@@ -108,6 +109,10 @@ export class Router {
 
         //Middlewares currently on the stack are wrapped around the handler
         let currentHandler = handler;
+
+        //Bind the _this parameter to the handler if specified
+        if (_this) currentHandler = currentHandler.bind(_this);
+
         this.middlewareStack.reverse().forEach(middlewareUsed => {
             let referencedHandler = currentHandler;
             currentHandler = (request: RequestData) => {

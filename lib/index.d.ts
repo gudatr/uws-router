@@ -44,11 +44,12 @@ export declare class Router {
     serveFileRelative(file: string, alias: string, cacheDuration?: number): void;
     /**
      * Adds an endpoint with a handler to be executed
-     * @param groupName the name of the group, e.g. "user" becomes "/user/"
-     * @param sub the stack called on this route
-     * @param alias optional, will override the handlers name for the route
+     * @param method the http method used, the method will be
+     * @param handle the method used to handle the incoming request for this route
+     * @param alias optional, if not specified the handlers name will be used for the endpoint
+     * @param _this If you are using a method from an object and not a static class as handler, add your object here so the this keyword is bound correctly
      */
-    endpoint(method: 'del' | 'patch' | 'post' | 'get' | 'put' | 'head' | 'options', handler: (request: RequestData) => void, alias?: string | undefined): void;
+    endpoint(method: 'del' | 'patch' | 'post' | 'get' | 'put' | 'head' | 'options', handler: (request: RequestData) => void, alias?: string | undefined, _this?: any | undefined): void;
     /**
      * @returns all defined routes and their methods
      */
@@ -61,7 +62,7 @@ export declare class Router {
      */
     listen(host: RecognizedString, port: number, callback: (listen: us_listen_socket) => void): void;
 }
-export declare type NextFunction = (request: RequestData) => any;
+export type NextFunction = (request: RequestData) => any;
 /**
  * A helper type for object literals
  */
