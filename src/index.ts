@@ -103,7 +103,7 @@ export class Router {
         Error.prepareStackTrace = (_, stack) => stack;
         let stack: any = new Error().stack?.slice(1);
         Error.prepareStackTrace = _prepareStackTrace;
-        return path.dirname(stack[0].getFileName());
+        return path.dirname(stack[1].getFileName());
     }
 
     /**
