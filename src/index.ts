@@ -139,7 +139,7 @@ export class Router {
 
         this.middlewareStack.reverse();
 
-        this.routes.push(`${method}: ${path}`);
+        this.routes.push(`${this.getHttpMethod(method)}: ${path}`);
 
         //Path is assigned, ignoring request type
         this.app[method](path, (res: HttpResponse, req: HttpRequest) => {
