@@ -88,14 +88,22 @@ export class Router {
 
     /**
      * The same as serveFile with the addition that the path
-     * in the file parameter is resolved with path.resolve(__dirname, file).
+     * in the file parameter is resolved relative to the calling file.
      * This lets you e.g. easily use paths relative to your router file.
      * @param file the absolute file path 
      * @param alias the route's name
      * @param cacheDuration the time to wait before refreshing from storage in ms
      */
     serveFileRelative(file: string, alias: string, cacheDuration: number = 10000) {
-        this.serveFile(path.resolve(__dirname, file), alias, cacheDuration);
+        this.serveFile(path.resolve(this.getCallingFile(), file), alias, cacheDuration);
+    }
+
+    private getCallingFile() {
+        let _prepareStackTrace = Error.prepareStackTrace;
+        Error.prepareStackTrace = (_, stack) => stack;
+        let stack: any = new Error().stack?.slice(1);
+        Error.prepareStackTrace = _prepareStackTrace;
+        return path.dirname(stack[0].getFileName());
     }
 
     /**

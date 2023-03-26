@@ -37,13 +37,14 @@ export declare class Router {
     serveFile(file: string, alias: string, cacheDuration?: number): void;
     /**
      * The same as serveFile with the addition that the path
-     * in the file parameter is resolved with path.resolve(__dirname, file).
+     * in the file parameter is resolved relative to the calling file.
      * This lets you e.g. easily use paths relative to your router file.
      * @param file the absolute file path
      * @param alias the route's name
      * @param cacheDuration the time to wait before refreshing from storage in ms
      */
     serveFileRelative(file: string, alias: string, cacheDuration?: number): void;
+    private getCallingFile;
     /**
      * Adds an endpoint with a handler to be executed
      * @param method the http method used, the method will be
