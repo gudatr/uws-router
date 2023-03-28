@@ -1,7 +1,7 @@
 import { HttpRequest, HttpResponse, SSLApp, TemplatedApp, AppOptions, App, RecognizedString, us_listen_socket } from "uWebSockets.js";
 import * as fs from 'fs';
 import { gzip } from "zlib";
-import path, { dirname } from "path";
+import path from "path";
 
 /**
  * A simple router that keeps your app file structured by using a
