@@ -1,6 +1,6 @@
 # uWebSockets.js Router
 
-A different approach to the routing of the uWebSockets.js http server.
+A different, low code approach to the routing of the uWebSockets.js http server.
 It also provides helper functions for easily setting up middleware (e.g. authentication) and cached file serving while keeping the code added on top of the underlying uWebSockets.js App as low as possible.
 
 Check out the starter kit for extensive documentation on its usage:
@@ -111,7 +111,37 @@ isListening will contain the socket if successful, which we won't be using.
     }
 ```
 
-For the best experience the handler methods should be static. If you require state within your controllers take note that the "this" relation will be lost in the endpoint function. To prevent this, you can set the object to be bound to "this" in the endpoint or the group function.
+For the best experience the handler methods should be static.
+
+If you require state within your controllers or want e.g. the possibility of dependency injection, please take note that the "this" relation will be lost in the endpoint function.
+
+To prevent this you have three options.
+
+You can either set the object to be bound to "this" in the endpoint:
+
+```javascript
+router.endpoint('get', controller.endpoint(request), 'endpoint', controller);
+```
+
+Or the group function:
+
+```javascript
+app.group('group', () => {
+
+    router.endpoint('get', controller.endpoint1);
+    router.endpoint('get', controller.endpoint2);
+    router.endpoint('get', controller.endpoint3);
+
+}, controller);
+```
+
+Or define a new anonymous function like this:
+
+```javascript
+router.endpoint('get', (req) => controller.endpoint(req));
+```
+
+The last option will add another function call on top of your handler though.
 
 #### Middleware
 
@@ -119,9 +149,9 @@ The router allows you to define middlewares that can preprocess requests for mul
 This way you can for example add an authentication layer with 2 lines of code for all your routes even if you already have hundreds defined.
 
 ```javascript
-    let Middleware = function (request: RequestData, next: NextFunction): void {
+    let Middleware = async function (request: RequestData, next: NextFunction): void {
         request.writeStatus("202 Accepted");
-        next(request);
+        await next(request);
     }
 ```
     

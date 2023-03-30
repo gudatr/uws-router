@@ -1,7 +1,7 @@
 {
   "name": "uws-router",
-  "version": "1.0.0",
-  "description": "A different approach to routing with uWebSockets.js",
+  "version": "1.0.2",
+  "description": "A different, low code approach to routing with uWebSockets.js",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {

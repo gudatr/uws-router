@@ -145,6 +145,7 @@ export class Router {
         this.app[method](path, (res: HttpResponse, req: HttpRequest) => {
 
             //An abort handler is required by uws as the response will not be available after connection termination
+            //_hasEnded will keep track if this so the response is not written to afterwards
             res.onAborted(() => res._hasEnded = true);
 
             let headers: Dictionary<string> = {};
