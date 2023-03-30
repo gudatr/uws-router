@@ -51,8 +51,9 @@ export declare class Router {
      * @param handle the method used to handle the incoming request for this route
      * @param alias optional, if not specified the handlers name will be used for the endpoint
      * @param _this If you are using a method from an object and not a static class as handler, add your object here so the this keyword is bound correctly
+     * @param skipBody Skip the requests body, the RequestData will have an empty string as body
      */
-    endpoint(method: 'del' | 'patch' | 'post' | 'get' | 'put' | 'head' | 'options', handler: (request: RequestData) => void, alias?: string | undefined, _this?: object | undefined, skipBody?: boolean, skipHeaders?: boolean): void;
+    endpoint(method: 'del' | 'patch' | 'post' | 'get' | 'put' | 'head' | 'options', handler: (request: RequestData) => void, alias?: string | undefined, _this?: object | undefined, skipBody?: boolean): void;
     /**
      * @returns all defined routes and their methods
      */
