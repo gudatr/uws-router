@@ -1,6 +1,6 @@
 {
   "name": "uws-router",
-  "version": "1.0.6",
+  "version": "1.0.9",
   "description": "A different, low code approach to http routing with uWebSockets.js",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -14,5 +14,13 @@
   },
   "devDependencies": {
     "@types/node": "^18.14.5"
-  }
+  },
+  "keywords": [
+    "router",
+    "web",
+    "api",
+    "middleware",
+    "app",
+    "http"
+  ]
 }

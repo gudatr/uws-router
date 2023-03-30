@@ -23,8 +23,8 @@ Import:
 
 #### Routing
 
-You main app file will probably only include your routes, which will link to the functions defined on your controllers.
-The strucure of your router definition could be something like this:
+The router setup will link to the functions defined on your controllers.
+Its structure could be something like this:
 
 ```javascript
     let router = new Router(false, {
@@ -34,7 +34,7 @@ The strucure of your router definition could be something like this:
     //key_file_name: 'server.key'
 });
 ```
-Initializes a new router.
+This initializes a new router.
 If you choose to use SSL for https, you have to supply the key and cert file names.
 Otherwise a http app will be created.
 
@@ -93,6 +93,8 @@ This example will launch on port 8080 on localhost / 127.0.0.1.
 isListening will contain the socket if successful, which we won't be using.
 
 #### Controllers
+
+Please take note, that you do not have to use the controller scheme or something similar at all, you can also supply functions directly to the router endpoints.
 
 ```javascript
     export default class Controller {
