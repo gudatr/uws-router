@@ -48,11 +48,11 @@ router.group('examples', () => {
 
     router.middleware(ExampleMiddleware1, () => {
 
-        router.endpoint('post', Controller.async);
+        router.endpoint('post', Controller.async, undefined, true);
 
         router.middleware(ExampleMiddleware2, () => {
 
-            router.endpoint('post', Controller.middleware, 'alias', undefined, true);
+            router.endpoint('get', Controller.middleware, 'alias');
 
         });
 
@@ -67,17 +67,17 @@ Intializes the following routes pointing to the assigned controller functions:
 
 - GET: /async
 - POST: /examples/sync
-- GET: /examples/async
-- POST: /examples/alias
+- POST: /examples/async
+- get: /examples/alias
 - GET: /examples/file
 
 The first route is only matched by a GET-Request to /async
 
 The second route is only matched by a POST-Request to /group/sync
 
-The third route passes through ExampleMiddleware1 before its handler is called. It also has an alias and skips the parsing of the request body.
+The third route passes through ExampleMiddleware1 before its handler is called. The body of the request is skipped as the skipBody parameter is set.
 
-The fourth route passes through ExampleMiddleware1 and then ExampleMiddleware2 before its handler is called
+The fourth route passes through ExampleMiddleware1 and then ExampleMiddleware2 before its handler is called. It also has an alias that defines the endpoint's name.
 
 The fifth route serves the file 'logo.jpg' that lies in a folder images relative to the router file.
 For easily copying assets and maintaining the path this way during a typescript build, checkout the package simple-copy-files.
