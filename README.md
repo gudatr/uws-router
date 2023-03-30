@@ -52,7 +52,7 @@ router.group('examples', () => {
 
         router.middleware(ExampleMiddleware2, () => {
 
-            router.endpoint('get', Controller.middleware);
+            router.endpoint('post', Controller.middleware, 'alias', undefined, true);
 
         });
 
@@ -68,14 +68,14 @@ Intializes the following routes pointing to the assigned controller functions:
 - GET: /async
 - POST: /examples/sync
 - GET: /examples/async
-- GET: /examples/middleware
+- POST: /examples/alias
 - GET: /examples/file
 
 The first route is only matched by a GET-Request to /async
 
 The second route is only matched by a POST-Request to /group/sync
 
-The third route passes through ExampleMiddleware1 before its handler is called
+The third route passes through ExampleMiddleware1 before its handler is called. It also has an alias and skips the parsing of the request body.
 
 The fourth route passes through ExampleMiddleware1 and then ExampleMiddleware2 before its handler is called
 

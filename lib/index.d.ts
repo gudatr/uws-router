@@ -52,7 +52,7 @@ export declare class Router {
      * @param alias optional, if not specified the handlers name will be used for the endpoint
      * @param _this If you are using a method from an object and not a static class as handler, add your object here so the this keyword is bound correctly
      */
-    endpoint(method: 'del' | 'patch' | 'post' | 'get' | 'put' | 'head' | 'options', handler: (request: RequestData) => void, alias?: string | undefined, _this?: object | undefined): void;
+    endpoint(method: 'del' | 'patch' | 'post' | 'get' | 'put' | 'head' | 'options', handler: (request: RequestData) => void, alias?: string | undefined, _this?: object | undefined, skipBody?: boolean, skipHeaders?: boolean): void;
     /**
      * @returns all defined routes and their methods
      */

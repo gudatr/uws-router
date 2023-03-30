@@ -113,7 +113,7 @@ export class Router {
      * @param alias optional, if not specified the handlers name will be used for the endpoint
      * @param _this If you are using a method from an object and not a static class as handler, add your object here so the this keyword is bound correctly
      */
-    endpoint(method: 'del' | 'patch' | 'post' | 'get' | 'put' | 'head' | 'options', handler: (request: RequestData) => void, alias: string | undefined = undefined, _this: object | undefined = undefined): void {
+    endpoint(method: 'del' | 'patch' | 'post' | 'get' | 'put' | 'head' | 'options', handler: (request: RequestData) => void, alias: string | undefined = undefined, _this: object | undefined = undefined, skipBody = false, skipHeaders = false): void {
 
         //Route is created from the groups currently on the stack plus the handlers name
         this.groupStack.push(alias ? alias : handler.name.toLowerCase());
@@ -141,34 +141,44 @@ export class Router {
 
         this.routes.push(`${this.getHttpMethod(method)}: ${path}`);
 
-        //Path is assigned, ignoring request type
-        this.app[method](path, (res: HttpResponse, req: HttpRequest) => {
+        if (skipBody) {
+            //Path is assigned, ignoring request type
+            this.app[method](path, (res: HttpResponse, req: HttpRequest) => {
 
-            //An abort handler is required by uws as the response will not be available after connection termination
-            //_hasEnded will keep track if this so the response is not written to afterwards
-            res.onAborted(() => res._hasEnded = true);
+                //An abort handler is required by uws as the response will not be available after connection termination
+                //_hasEnded will keep track if this so the response is not written to afterwards
+                res.onAborted(() => res._hasEnded = true);
 
-            let headers: Dictionary<string> = {};
-            req.forEach((headerKey, headerValue) => {
-                headers[headerKey] = headerValue;
+                let headers: Dictionary<string> = {};
+                req.forEach((headerKey, headerValue) => headers[headerKey] = headerValue);
+
+                let requestData = new RequestData(headers, this.getHttpMethod(method), '', req.getQuery(), res);
+
+                currentHandler(requestData);
             });
+        } else {
+            //Path is assigned, ignoring request type
+            this.app[method](path, (res: HttpResponse, req: HttpRequest) => {
 
-            let body = Buffer.from('');
-            let query = req.getQuery();
-            res.onData(async (data: ArrayBuffer, isLast: boolean) => {
-                body = Buffer.concat([body, Buffer.from(data)]);
+                //An abort handler is required by uws as the response will not be available after connection termination
+                //_hasEnded will keep track if this so the response is not written to afterwards
+                res.onAborted(() => res._hasEnded = true);
 
-                if (isLast) {
-                    currentHandler(
-                        new RequestData(
-                            headers,
-                            this.getHttpMethod(method),
-                            body.toString(),
-                            query,
-                            res));
-                }
-            });
-        })
+                let headers: Dictionary<string> = {};
+                req.forEach((headerKey, headerValue) => headers[headerKey] = headerValue);
+
+                let body = Buffer.from('');
+                let query = req.getQuery();
+                res.onData(async (data: ArrayBuffer, isLast: boolean) => {
+                    body = Buffer.concat([body, Buffer.from(data)]);
+
+                    if (isLast) {
+                        let requestData = new RequestData(headers, this.getHttpMethod(method), body.toString(), query, res);
+                        currentHandler(requestData);
+                    }
+                });
+            })
+        }
     }
 
     /**
