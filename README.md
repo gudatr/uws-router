@@ -1,7 +1,7 @@
 # uWebSockets.js Router
 
-A different, low code approach to the routing of the uWebSockets.js http server.
-It also provides helper functions for easily setting up middleware (e.g. authentication) and cached file serving while keeping the code added on top of the underlying uWebSockets.js App as low as possible.
+A low code approach to routing and setting up an http server with uWebSockets.js .
+It also provides helper functions for easily setting up middleware (e.g. authentication) and cached file serving while keeping the code added on top of the underlying uWebSockets.js app as low as possible.
 
 Check out the starter kit for extensive documentation on its usage:
 
